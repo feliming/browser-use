@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "name": "Browser Use",
+  "name": "Browser Use 中文文档",
   "theme": "mint",
   "colors": {
     "primary": "#16A34A",
@@ -11,14 +11,14 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Documentation",
+        "tab": "文档",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "快速开始",
             "pages": ["introduction", "quickstart"]
           },
           {
-            "group": "Customize",
+            "group": "自定义",
             "pages": [
               "customize/supported-models",
               "customize/agent-settings",
@@ -31,7 +31,7 @@
             ]
           },
           {
-            "group": "Development",
+            "group": "开发",
             "pages": [
               "development/local-setup",
               "development/telemetry",
@@ -42,10 +42,10 @@
         ]
       },
       {
-        "tab": "Cloud API",
+        "tab": "云端 API",
         "groups": [
           {
-            "group": "Cloud API",
+            "group": "云端 API",
             "pages": ["cloud/quickstart", "cloud/implementation"]
           }
         ]
@@ -59,7 +59,7 @@
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg",
-    "href": "https://browser-use.com"
+    "href": "https://browser-use.mingxi.ltd"
   },
   "navbar": {
     "links": [
@@ -68,21 +68,35 @@
         "href": "https://github.com/browser-use/browser-use"
       },
       {
-        "label": "Twitter",
+        "label": "X",
         "href": "https://x.com/gregpr07"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Join Discord",
+      "label": "加入 Discord",
       "href": "https://link.browser-use.com/discord"
     }
+  },
+  "search": {
+    "prompt": "搜索文档"
   },
   "footer": {
     "socials": {
       "x": "https://x.com/gregpr07",
       "github": "https://github.com/browser-use/browser-use",
       "linkedin": "https://linkedin.com/company/browser-use"
-    }
+    },
+    "links": [
+      {
+        "header": "社区",
+        "items": [
+          {
+            "label": "加入 Discord",
+            "href": "https://link.browser-use.com/discord"
+          }
+        ]
+      }
+    ]
   }
 }
