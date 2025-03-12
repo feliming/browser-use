@@ -3,9 +3,9 @@
   "name": "Browser Use",
   "theme": "mint",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#f97316",
+    "light": "#f97316",
+    "dark": "#f97316"
   },
   "favicon": "/favicon.svg",
   "navigation": {
