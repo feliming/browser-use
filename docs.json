@@ -86,17 +86,12 @@
       "x": "https://x.com/gregpr07",
       "github": "https://github.com/browser-use/browser-use",
       "linkedin": "https://linkedin.com/company/browser-use"
+    }
+  },
+  "seo": {
+    "metatags": {
+      "description": "Browser Use 中文文档"
     },
-    "links": [
-      {
-        "header": "社区",
-        "items": [
-          {
-            "label": "加入 Discord",
-            "href": "https://link.browser-use.com/discord"
-          }
-        ]
-      }
-    ]
+    "indexing": "all"
   }
 }
