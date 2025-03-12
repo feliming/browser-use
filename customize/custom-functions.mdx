@@ -1,0 +1,123 @@
+---
+title: "自定义函数"
+description: "扩展默认代理并编写自定义函数调用"
+icon: "function"
+---
+
+## 基本函数注册
+
+函数可以是 `sync` 或 `async`。保持它们专注和单一目的。
+
+```python
+from browser_use import Controller, ActionResult
+# 初始化控制器
+controller = Controller()
+
+@controller.action('向用户询问信息')
+def ask_human(question: str) -> str:
+    answer = input(f'\n{question}\n输入: ')
+    return ActionResult(extracted_content=answer)
+```
+
+<Note>
+  基础 `Controller` 已经实现了你可能需要的所有基本功能来与浏览器交互。
+</Note>
+
+```python
+# ... 然后将控制器传递给代理
+agent = Agent(
+    task=task,
+    llm=llm,
+    controller=controller
+)
+```
+
+<Note>
+  保持函数名称和描述简短明了。代理仅根据名称和描述来使用函数。
+  动作的字符串化输出会传递给代理。
+</Note>
+
+## 浏览器感知函数
+
+对于需要浏览器访问的动作,只需在函数参数中添加 `browser` 参数:
+
+```python
+from browser_use import Browser, Controller, ActionResult
+
+controller = Controller()
+@controller.action('打开网站')
+async def open_website(url: str, browser: Browser):
+    page = browser.get_current_page()
+    await page.goto(url)
+    return ActionResult(extracted_content='网站已打开')
+```
+
+## 使用 Pydantic 的结构化参数
+
+对于复杂的动作,你可以使用 Pydantic 模型定义参数模式:
+
+```python
+from pydantic import BaseModel
+from typing import Optional
+from browser_use import Controller, ActionResult, Browser
+
+controller = Controller()
+
+class JobDetails(BaseModel):
+    title: str
+    company: str
+    job_link: str
+    salary: Optional[str] = None
+
+@controller.action(
+    '保存在页面上找到的工作详情',
+    param_model=JobDetails
+)
+async def save_job(params: JobDetails, browser: Browser):
+    print(f"保存工作: {params.company} 的 {params.title}")
+
+    # 如果需要访问浏览器
+    page = browser.get_current_page()
+    await page.goto(params.job_link)
+```
+
+## 对多个代理使用自定义动作
+
+你可以对多个代理使用相同的控制器。
+
+```python
+controller = Controller()
+
+# ... 向控制器注册动作
+
+agent = Agent(
+    task="访问网站 X 并找到最新新闻",
+    llm=llm,
+    controller=controller
+)
+
+# 运行代理
+await agent.run()
+
+agent2 = Agent(
+    task="访问网站 Y 并找到最新新闻",
+    llm=llm,
+    controller=controller
+)
+
+await agent2.run()
+```
+
+<Note>
+  控制器是无状态的,可以用于注册多个动作和多个代理。
+</Note>
+
+## 排除函数
+如果你想让代理使用更少的动作,你可以从控制器中排除它们。
+```python
+controller = Controller(exclude_actions=['open_tab', 'search_google'])
+```
+
+
+访问 [examples/custom-functions](https://github.com/browser-use/browser-use/tree/main/examples/custom-functions) 查看更多示例,如文件上传或通知。
+

@@ -1,71 +1,99 @@
 ---
-title: Introduction
-description: "Welcome to the home of your new documentation"
+title: "简介"
+description: "欢迎使用 Browser Use - 我们让 AI 能够控制你的浏览器"
+icon: "book-open"
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.png"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.png"
-  alt="Hero Dark"
-/>
+<img className="block" src="/images/browser-use.png" alt="Browser Use" />
 
-## Setting up
+## 概述
 
-The first step to world-class documentation is setting up your editing environments.
+Browser Use 是连接 AI 代理与浏览器的最简单方式。它通过提供一个强大而简单的浏览器自动化接口,使网站对 AI 代理可访问。
+
+<Note>
+  如果你在项目中使用了 Browser Use,欢迎在我们的 [Discord 社区](https://link.browser-use.com/discord)展示!
+</Note>
+
+## 入门指南
 
 <CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
+  <Card title="快速开始" icon="rocket" href="/quickstart">
+    几分钟内开始使用 Browser Use
   </Card>
   <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
+    title="支持的模型"
+    icon="robot"
+    href="/customize/supported-models"
   >
-    Preview your changes before you push to make sure they're perfect
+    为你的代理配置不同的 LLM
+  </Card>
+  <Card title="代理设置" icon="gear" href="/customize/agent-settings">
+    了解如何配置和自定义你的代理
+  </Card>
+  <Card title="自定义函数" icon="code" href="/customize/custom-functions">
+    使用自定义操作扩展功能
   </Card>
 </CardGroup>
 
-## Make it yours
+## 精彩演示
 
-Update your docs to your brand and add valuable content for the best user conversion.
+### 在 Google Docs 中写作
+
+任务: 在 Google Docs 中写一封信给我的爸爸,感谢他所做的一切,并将文档保存为 PDF。
+
+<Frame>
+  <img src="https://github.com/user-attachments/assets/242ade3e-15bc-41c2-988f-cbc5415a66aa" />
+</Frame>
+
+### 工作申请
+
+任务: 阅读我的简历并找到机器学习工作,将它们保存到文件中，然后在新标签页中开始申请。
+
+<Frame>
+  <video
+    controls
+    src="https://github.com/user-attachments/assets/171fb4d6-0355-46f2-863e-edb04a828d04"
+  />
+</Frame>
+
+### 航班搜索
+
+任务: 在 kayak.com 上查找从苏黎世到北京的航班。
+
+<Frame>
+  <img src="https://github.com/user-attachments/assets/ea605d4a-90e6-481e-a569-f0e0db7e6390" />
+</Frame>
+
+### 数据收集
+
+任务: 在 Hugging Face 上查找许可证为 cc-by-sa-4.0 的模型并按最多点赞排序,将前 5 个保存到文件。
+
+<Frame>
+  <video
+    controls
+    src="https://github.com/user-attachments/assets/de73ee39-432c-4b97-b4e8-939fd7f323b3"
+  />
+</Frame>
+
+## 社区与支持
 
 <CardGroup cols={2}>
   <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
+    title="加入 Discord"
+    icon="discord"
+    href="https://link.browser-use.com/discord"
   >
-    Customize your docs to your company's colors and brands
+    加入我们的社区获取支持和展示
   </Card>
   <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
+    title="GitHub"
+    icon="github"
+    href="https://github.com/browser-use/browser-use"
   >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/content/components/accordions"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/customers"
-  >
-    Check out our showcase of our favorite documentation
+    在 GitHub 上为我们加星并参与开发
   </Card>
 </CardGroup>
+
+<Note>
+  Browser Use 采用 MIT 许可证并得到积极维护。我们欢迎来自社区的贡献和反馈!
+</Note>

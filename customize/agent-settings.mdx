@@ -1,0 +1,209 @@
+---
+title: "代理设置"
+description: "学习如何配置代理"
+icon: "gear"
+---
+
+## 概述
+
+`Agent` 类是 Browser Use 处理浏览器自动化的核心组件。以下是初始化代理时可以使用的主要配置选项。
+
+## 基本设置
+
+```python
+from browser_use import Agent
+from langchain_openai import ChatOpenAI
+
+agent = Agent(
+    task="搜索关于 AI 的最新新闻",
+    llm=ChatOpenAI(model="gpt-4o"),
+)
+```
+
+### 必需参数
+
+- `task`: 代理要执行的指令
+- `llm`: LangChain 聊天模型实例。查看 <a href="/customize/supported-models">LangChain 模型</a> 了解支持的模型。
+
+## 代理行为
+
+控制代理如何运行:
+
+```python
+agent = Agent(
+    task="你的任务",
+    llm=llm,
+    controller=custom_controller,  # 用于自定义工具调用
+    use_vision=True,              # 启用视觉能力
+    save_conversation_path="logs/conversation"  # 保存聊天日志
+)
+```
+
+### 行为参数
+
+- `controller`: 代理可以调用的函数注册表。默认为基础 Controller。详见 <a href="/customize/custom-functions">自定义函数</a>。
+- `use_vision`: 启用/禁用视觉能力。默认为 `True`。
+  - 启用时,模型会处理网页的视觉信息
+  - 禁用以降低成本或使用不支持视觉的模型
+  - 对于 GPT-4o,图像处理每张图片大约需要 800-1000 个令牌(约 0.002 美元),但这取决于定义的屏幕大小
+- `save_conversation_path`: 保存完整对话历史的路径。用于调试。
+- `system_prompt_class`: 自定义系统提示类。查看 <a href="/customize/system-prompt">系统提示</a> 了解自定义选项。
+
+<Note>
+  建议启用视觉能力以更好地理解网页交互,
+  但可以禁用以降低成本或在使用不支持视觉的模型时。
+</Note>
+
+## (重用)浏览器配置
+
+你可以配置代理如何与浏览器交互。要查看更多 `Browser` 选项,请参考 <a href="/customize/browser-settings">浏览器设置</a> 文档。
+
+### 重用现有浏览器
+
+`browser`: Browser Use Browser 实例。提供时,代理将重用此浏览器实例,并为每个 `run()` 自动创建新的上下文。
+
+```python
+from browser_use import Agent, Browser
+from browser_use.browser.context import BrowserContext
+
+# 重用现有浏览器
+browser = Browser()
+agent = Agent(
+    task=task1,
+    llm=llm,
+    browser=browser  # 浏览器实例将被重用
+)
+
+await agent.run()
+
+# 手动关闭浏览器
+await browser.close()
+```
+
+<Note>
+  记住: 在这种情况下,`Browser` 不会自动关闭。
+</Note>
+
+### 重用现有浏览器上下文
+
+`browser_context`: Playwright 浏览器上下文。用于维护持久会话。详见 <a href="/customize/persistent-browser">持久浏览器</a>。
+
+```python
+from browser_use import Agent, Browser
+from playwright.async_api import BrowserContext
+
+# 使用特定浏览器上下文(推荐方法)
+async with await browser.new_context() as context:
+    agent = Agent(
+        task=task2,
+        llm=llm,
+        browser_context=context  # 使用持久上下文
+    )
+
+    # 运行代理
+    await agent.run()
+
+    # 将上下文传递给下一个代理
+    next_agent = Agent(
+        task=task2,
+        llm=llm,
+        browser_context=context
+    )
+
+    ...
+
+await browser.close()
+```
+
+有关浏览器上下文如何工作的更多信息,请参考 [Playwright 文档](https://playwright.dev/docs/api/class-browsercontext)。
+
+<Note>
+  你可以为多个代理重用相同的上下文。如果你什么都不做,浏览器将在 `run()` 完成时自动创建和关闭。
+</Note>
+
+## 运行代理
+
+代理使用异步 `run()` 方法执行:
+
+- `max_steps` (默认: `100`)  
+  代理在执行期间可以采取的最大步骤数。这可以防止无限循环并帮助控制执行时间。
+
+## 代理历史
+
+该方法返回一个包含完整执行历史的 `AgentHistoryList` 对象。这个历史对调试、分析和创建可重现的脚本非常有价值。
+
+```python
+# 访问历史的示例
+history = await agent.run()
+
+# 访问(一些)有用的信息
+history.urls()              # 访问过的 URL 列表
+history.screenshots()       # 截图路径列表
+history.action_names()      # 执行的动作名称
+history.extracted_content() # 执行期间提取的内容
+history.errors()           # 发生的任何错误
+history.model_actions()     # 所有带参数的动作
+```
+
+`AgentHistoryList` 提供了许多帮助方法来分析执行:
+
+- `final_result()`: 获取最终提取的内容
+- `is_done()`: 检查代理是否成功完成
+- `has_errors()`: 检查是否发生任何错误
+- `model_thoughts()`: 获取代理的推理过程
+- `action_results()`: 获取所有动作的结果
+
+<Note>
+  有关帮助方法的完整列表和详细的历史分析功能,请参考 [AgentHistoryList 源代码](https://github.com/browser-use/browser-use/blob/main/browser_use/agent/views.py#L111)。
+</Note>
+
+## 无 LLM 运行初始动作
+使用[此示例](https://github.com/browser-use/browser-use/blob/main/examples/features/initial_actions.py)可以在没有 LLM 的情况下运行初始动作。
+将动作指定为字典,其中键是动作名称,值是动作参数。你可以在 [Controller](https://github.com/browser-use/browser-use/blob/main/browser_use/controller/service.py) 源代码中找到我们所有的动作。
+```python
+initial_actions = [
+    {'open_tab': {'url': 'https://www.google.com'}},
+    {'open_tab': {'url': 'https://en.wikipedia.org/wiki/Randomness'}},
+    {'scroll_down': {'amount': 1000}},
+]
+agent = Agent(
+    task='页面上显示了哪些理论?',
+    initial_actions=initial_actions,
+    llm=llm,
+)
+```
+
+## 使用规划模型运行
+
+你可以配置代理使用单独的规划模型进行高级任务规划:
+
+```python
+from langchain_openai import ChatOpenAI
+
+# 初始化模型
+llm = ChatOpenAI(model='gpt-4o')
+planner_llm = ChatOpenAI(model='o3-mini')
+
+agent = Agent(
+    task="你的任务",
+    llm=llm,
+    planner_llm=planner_llm,           # 单独的规划模型
+    use_vision_for_planner=False,      # 为规划器禁用视觉
+    planner_interval=4                 # 每 4 步规划一次
+)
+```
+
+### 规划器参数
+
+- `planner_llm`: 用于高级任务规划的 LangChain 聊天模型实例。可以是比主 LLM 更小/更便宜的模型。
+- `use_vision_for_planner`: 为规划器模型启用/禁用视觉能力。默认为 `True`。
+- `planner_interval`: 规划阶段之间的步骤数。默认为 `1`。
+
+使用单独的规划模型可以帮助:
+- 通过使用较小的模型进行高级规划来降低成本
+- 改进任务分解和战略思维
+- 更好地处理复杂的多步骤任务
+
+<Note>
+  规划器模型是可选的。如果未指定,代理将不使用规划器模型。
+</Note>

@@ -1,0 +1,176 @@
+---
+title: "浏览器设置"
+description: "配置浏览器行为和上下文设置"
+icon: "globe"
+---
+
+Browser Use 允许你通过两个主要配置类来自定义浏览器的行为: `BrowserConfig` 和 `BrowserContextConfig`。这些设置控制从无头模式到代理设置和页面加载行为的所有内容。
+
+<Note>
+  我们目前正在改进浏览器上下文的管理方式。系统将很快过渡到"1个代理、1个浏览器、1个上下文"模型,以获得更好的稳定性和开发者体验。
+</Note>
+
+# 浏览器配置
+
+`BrowserConfig` 类控制核心浏览器行为和连接设置。
+
+```python
+from browser_use import BrowserConfig
+
+# 基本配置
+config = BrowserConfig(
+    headless=False,
+    disable_security=True
+)
+
+browser = Browser(config=config)
+
+agent = Agent(
+    browser=browser,
+    # ...
+)
+```
+
+## 核心设置
+
+- **headless** (默认: `False`)
+  在没有可见 UI 的情况下运行浏览器。注意某些网站可能会检测到无头模式。
+
+- **disable_security** (默认: `True`)
+  禁用浏览器安全功能。虽然这可以解决某些功能问题(如跨站点 iFrame),但在访问不受信任的网站时应谨慎使用。
+
+### 其他设置
+
+- **extra_chromium_args** (默认: `[]`)
+  在启动时传递给浏览器的额外参数。查看[完整的可用参数列表](https://github.com/browser-use/browser-use/blob/main/browser_use/browser/browser.py#L180)。
+
+- **proxy** (默认: `None`)
+  用于使用外部代理服务的标准 Playwright 代理设置。
+
+- **new_context_config** (默认: `BrowserContextConfig()`)
+  新浏览器上下文的默认设置。请参见下面的上下文配置。
+
+<Note>
+  对于限制自动访问的网站的网页抓取任务,我们建议使用外部浏览器或代理提供商以获得更好的可靠性。
+</Note>
+
+## 替代初始化
+
+这些设置允许你连接到外部浏览器提供商或使用本地 Chrome 实例。
+
+### 外部浏览器提供商 (wss)
+
+连接到基于云的浏览器服务以增强可靠性和代理功能。
+
+```python
+config = BrowserConfig(
+    wss_url="wss://your-browser-provider.com/ws"
+)
+```
+
+- **wss_url** (默认: `None`)
+  用于连接外部浏览器提供商的 WebSocket URL(例如 anchorbrowser.com, steel.dev, browserbase.com, browserless.io)。
+
+<Note>
+  这会覆盖本地浏览器设置并使用提供商的配置。
+  参考他们的文档了解设置。
+</Note>
+
+### 外部浏览器提供商 (cdp)
+
+使用 Chrome DevTools Protocol (CDP) 连接到云或本地 Chrome 实例,用于 `headless-shell` 或 `browserless` 等工具。
+
+```python
+config = BrowserConfig(
+    cdp_url="http://localhost:9222"
+)
+```
+
+- **cdp_url** (默认: `None`)
+  通过 CDP 连接到 Chrome 实例的 URL。通常用于调试或连接到本地运行的 Chrome 实例。
+
+### 本地 Chrome 实例 (binary)
+
+连接到你现有的 Chrome 安装以访问保存的状态和 cookie。
+
+```python
+config = BrowserConfig(
+    chrome_instance_path="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+)
+```
+
+- **chrome_instance_path** (默认: `None`)
+  连接到现有 Chrome 安装的路径。特别适用于需要现有登录状态或浏览器首选项的工作流程。
+
+<Note>这将覆盖其他浏览器设置。</Note>
+
+# 上下文配置
+
+`BrowserContextConfig` 类控制单个浏览器上下文的设置。
+
+```python
+from browser_use.browser.context import BrowserContextConfig
+
+config = BrowserContextConfig(
+    cookies_file="path/to/cookies.json",
+    wait_for_network_idle_page_load_time=3.0,
+    browser_window_size={'width': 1280, 'height': 1100},
+    locale='en-US',
+    user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
+    highlight_elements=True,
+    viewport_expansion=500,
+    allowed_domains=['google.com', 'wikipedia.org'],
+)
+
+browser = Browser()
+context = BrowserContext(browser=browser, config=config)
+
+
+async def run_search():
+	agent = Agent(
+		browser_context=context,
+		task='你的任务',
+		llm=llm)
+```
+
+## 配置选项
+
+### 页面加载设置
+
+- **minimum_wait_page_load_time** (默认: `0.5`)
+  在捕获页面状态以供 LLM 输入之前等待的最短时间。
+
+- **wait_for_network_idle_page_load_time** (默认: `1.0`)
+  等待网络活动停止的时间。对于较慢的网站增加到 3-5 秒。这跟踪基本内容加载,而不是视频等动态元素。
+
+- **maximum_wait_page_load_time** (默认: `5.0`)
+  在继续之前等待页面加载的最长时间。
+
+### 显示设置
+
+- **browser_window_size** (默认: `{'width': 1280, 'height': 1100}`)
+  浏览器窗口尺寸。默认大小针对一般用例和与 cookie 横幅等常见 UI 元素的交互进行了优化。
+
+- **locale** (默认: `None`)
+  指定用户区域设置,例如 en-GB、de-DE 等。区域设置将影响导航器。语言值、Accept-Language 请求头值以及数字和日期格式规则。如果未提供,默认为系统默认区域设置。
+
+- **highlight_elements** (默认: `True`)
+  用彩色边界框突出显示屏幕上的交互元素。
+
+- **viewport_expansion** (默认: `500`)
+  视口扩展像素。通过这个你可以控制在 LLM 上下文中包含多少页面内容。如果设置为 -1,将包含整个页面的所有元素(这会导致高令牌使用)。如果设置为 0,则只包含视口中可见的元素。
+  默认为 500 像素,这意味着我们在上下文中包含的内容比可见视口稍多一点。
+
+### 限制 URL
+
+- **allowed_domains** (默认: `None`)
+  代理可以访问的允许域列表。如果为 None,则允许所有域。
+  示例: ['google.com', 'wikipedia.org'] - 这里代理只能访问 google 和 wikipedia。
+
+### 调试和录制
+
+- **save_recording_path** (默认: `None`)
+  保存视频录制的目录路径。
+
+- **trace_path** (默认: `None`)
+  保存跟踪文件的目录路径。文件自动命名为 `{trace_path}/{context_id}.zip`。

@@ -1,0 +1,106 @@
+---
+title: "实现 API"
+description: "学习如何在 Python 中实现 Browser Use API"
+icon: "code"
+---
+
+本指南展示如何使用 Python 实现常见的 API 模式。我们将创建一个完整的示例来创建和监控浏览器自动化任务。
+
+## 基本实现
+
+有关所有设置,请参见 [运行任务](cloud/api-v10/run-task)。
+
+这里是使用 Python 的 `requests` 库来流式传输任务步骤的简单实现:
+
+```python
+import json
+import time
+
+import requests
+
+API_KEY = 'your_api_key_here'
+BASE_URL = 'https://api.browser-use.com/api/v1'
+HEADERS = {'Authorization': f'Bearer {API_KEY}'}
+
+
+def create_task(instructions: str):
+	"""创建新的浏览器自动化任务"""
+	response = requests.post(f'{BASE_URL}/run-task', headers=HEADERS, json={'task': instructions})
+	return response.json()['id']
+
+
+def get_task_status(task_id: str):
+	"""获取当前任务状态"""
+	response = requests.get(f'{BASE_URL}/task/{task_id}/status', headers=HEADERS)
+	return response.json()
+
+
+def get_task_details(task_id: str):
+	"""获取完整的任务详情,包括输出"""
+	response = requests.get(f'{BASE_URL}/task/{task_id}', headers=HEADERS)
+	return response.json()
+
+
+def wait_for_completion(task_id: str, poll_interval: int = 2):
+	"""轮询任务状态直到完成"""
+	count = 0
+	unique_steps = []
+	while True:
+		details = get_task_details(task_id)
+		new_steps = details['steps']
+		# 仅使用不在 unique_steps 中的新步骤
+		if new_steps != unique_steps:
+			for step in new_steps:
+				if step not in unique_steps:
+					print(json.dumps(step, indent=4))
+			unique_steps = new_steps
+		count += 1
+		status = details['status']
+
+		if status in ['finished', 'failed', 'stopped']:
+			return details
+		time.sleep(poll_interval)
+
+
+def main():
+	task_id = create_task('打开 https://www.google.com 并搜索 openai')
+	print(f'创建的任务 ID: {task_id}')
+	task_details = wait_for_completion(task_id)
+	print(f"最终输出: {task_details['output']}")
+
+
+if __name__ == '__main__':
+	main()
+
+```
+
+## 任务控制示例
+
+以下是如何实现带有暂停/恢复功能的任务控制:
+
+```python
+def control_task():
+	# 创建新任务
+	task_id = create_task("访问 google.com 并搜索 Browser Use")
+
+	# 等待 5 秒
+	time.sleep(5)
+
+	# 暂停任务
+	requests.put(f"{BASE_URL}/pause-task?task_id={task_id}", headers=HEADERS)
+	print("任务已暂停! 查看实时预览。")
+
+	# 等待用户输入
+	input("按回车键继续...")
+
+	# 恢复任务
+	requests.put(f"{BASE_URL}/resume-task?task_id={task_id}", headers=HEADERS)
+
+	# 等待完成
+	result = wait_for_completion(task_id)
+	print(f"任务完成,输出: {result['output']}")
+```
+
+<Note>
+  记住在生产代码中要安全地处理你的 API 密钥并实现适当的错误处理。
+</Note>

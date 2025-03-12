@@ -1,0 +1,100 @@
+---
+title: "快速入门"
+description: "了解如何开始使用 Browser Use Cloud API"
+icon: "cloud"
+---
+
+Browser Use Cloud API 允许你以编程方式创建和管理浏览器自动化代理。每个代理都可以执行任务并通过实时预览 URL 提供实时反馈。
+
+## 前提条件
+
+<Note>
+  你需要一个有效的订阅和来自 [cloud.browser-use.com/billing](https://cloud.browser-use.com/billing) 的 API 密钥
+</Note>
+
+## 定价
+
+Browser Use Cloud API 的价格为每个代理执行的**每个步骤 0.05 美元**。
+
+<Note>
+  由于 Browser Use 可以同时执行多个步骤,
+  填写表单的价格比其他服务要低得多。
+</Note>
+
+## 创建你的第一个代理
+
+通过提供自然语言指令来创建新的浏览器自动化任务:
+
+```bash
+curl -X POST https://api.browser-use.com/api/v1/run-task \
+  -H "Authorization: Bearer your_api_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "task": "访问 google.com 并搜索 Browser Use"
+  }'
+```
+
+API 返回一个任务 ID,你可以用它来管理任务并查看实时预览 URL。
+
+<Note>
+  任务响应包含一个 `live_url`,你可以将其嵌入 iframe 中,
+  实时观看和控制代理。
+</Note>
+
+## 管理任务
+
+使用这些操作控制运行中的任务:
+
+<AccordionGroup>
+  <Accordion title="暂停/恢复任务">
+    使用 [`/api/v1/pause-task`](/cloud/api-v1/pause-task) 临时暂停任务执行,
+    使用 [`/api/v1/resume-task`](/cloud/api-v1/resume-task) 恢复。这对手动检查或干预很有用。
+  </Accordion>
+
+  <Accordion title="停止任务">
+    使用 [`/api/v1/stop-task`](/cloud/api-v1/stop-task) 永久停止任务。任务停止后无法恢复。
+  </Accordion>
+</AccordionGroup>
+
+有关详细的 API 文档,请参阅左侧的选项卡,其中包含完整的 API 覆盖范围。
+
+## 构建你自己的客户端 (OpenAPI)
+
+<Note>
+  我们只建议在你不需要控制且只需要运行简单任务时使用此方法。
+</Note>
+
+构建自己的客户端的最佳方式是使用我们的 [OpenAPI 规范](http://api.browser-use.com/openapi.json) 生成类型安全的客户端库。
+
+### Python
+
+使用 [openapi-python-client](https://github.com/openapi-generators/openapi-python-client) 生成现代 Python 客户端:
+
+```bash
+# 安装生成器
+pipx install openapi-python-client --include-deps
+
+# 生成客户端
+openapi-python-client generate --url http://api.browser-use.com/openapi.json
+```
+
+这将创建一个具有完整类型提示、现代数据类和异步支持的 Python 包。
+
+### TypeScript/JavaScript
+
+对于 TypeScript 项目,使用 [openapi-typescript](https://www.npmjs.com/package/openapi-typescript) 生成类型定义:
+
+```bash
+# 安装生成器
+npm install -D openapi-typescript
+
+# 生成类型
+npx openapi-typescript http://api.browser-use.com/openapi.json -o browser-use-api.ts
+```
+
+这将创建可与你首选的 HTTP 客户端一起使用的 TypeScript 定义。
+
+<Note>
+  需要帮助? 请通过 support@browser-use.com 联系我们的支持团队或加入我们的
+  [Discord 社区](https://link.browser-use.com/discord)
+</Note>

@@ -1,0 +1,76 @@
+---
+title: "本地设置"
+description: "在本地设置 Browser Use 开发环境"
+icon: "laptop-code"
+---
+
+## 前提条件
+
+Browser Use 需要 Python 3.11 或更高版本。我们推荐使用 [uv](https://docs.astral.sh/uv/) 进行 Python 环境管理。
+
+## 克隆仓库
+
+首先,克隆 Browser Use 仓库:
+
+```bash
+git clone https://github.com/browser-use/browser-use
+cd browser-use
+```
+
+## 环境设置
+
+1. 创建虚拟环境:
+
+```bash
+uv venv --python 3.11
+```
+
+2. 安装依赖:
+
+```bash
+# 以可编辑模式安装包及其所有开发依赖
+uv pip install -e ".[dev]"
+```
+
+<Note>
+  `-e` 标志以"可编辑"模式安装包,这意味着你的本地代码更改将立即生效,无需重新安装。`[dev]` 部分安装开发所需的额外依赖。
+</Note>
+
+## 配置
+
+设置你的环境变量:
+
+```bash
+# 复制示例环境文件
+cp .env.example .env
+```
+
+或手动创建包含 API 密钥的 `.env` 文件:
+
+```bash .env
+OPENAI_API_KEY=
+ANTHROPIC_API_KEY=
+```
+
+<Note>
+  你可以使用 LangChain 支持的任何 LLM 模型。查看 [LangChain 模型](/customize/supported-models)了解可用选项及其特定的 API 密钥要求。
+</Note>
+
+## 开发
+
+设置完成后,你可以:
+
+- 使用 `pytest` 运行测试
+- 使用 `hatch build` 构建包
+- 尝试 `examples/` 目录中的示例
+
+## 获取帮助
+
+如果遇到任何问题:
+
+1. 查看我们的 [GitHub Issues](https://github.com/browser-use/browser-use/issues)
+2. 加入我们的 [Discord 社区](https://link.browser-use.com/discord)获取支持
+
+<Note>
+  我们欢迎贡献! 查看我们的[贡献指南](/development/contribution-guide)了解如何帮助改进 Browser Use。
+</Note>

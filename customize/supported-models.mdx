@@ -1,0 +1,222 @@
+---
+title: "支持的模型"
+description: "使用不同 LangChain 聊天模型与 Browser Use 的指南"
+icon: "robot"
+---
+
+## 概述
+
+Browser Use 支持多种 LangChain 聊天模型。以下是如何配置和使用最流行的模型。完整列表请参见 [LangChain 文档](https://python.langchain.com/docs/integrations/chat/)。
+
+## 模型推荐
+
+我们尚未测试所有模型的性能。目前,使用 GPT-4o 可以在 [WebVoyager 数据集](https://browser-use.com/posts/sota-technical-report)上达到 89% 的准确率。DeepSeek-V3 的成本比 GPT-4o 低 30 倍。Gemini-2.0-exp 在社区中也越来越受欢迎,因为它目前是免费的。
+我们也支持本地模型,如 Qwen 2.5,但要注意小型模型经常会返回错误的输出结构-这会导致解析错误。我们相信本地模型今年会有显著改进。
+
+<Note>
+  所有模型都需要其各自的 API 密钥。在运行代理之前,请确保在环境变量中设置它们。
+</Note>
+
+## 支持的模型
+
+所有支持工具调用的 LangChain 聊天模型都可用。我们将在此记录最受欢迎的模型。
+
+### OpenAI
+
+推荐使用 OpenAI 的 GPT-4o 模型以获得最佳性能。
+
+```python
+from langchain_openai import ChatOpenAI
+from browser_use import Agent
+
+# 初始化模型
+llm = ChatOpenAI(
+    model="gpt-4o",
+    temperature=0.0,
+)
+
+# 使用该模型创建代理
+agent = Agent(
+    task="你的任务",
+    llm=llm
+)
+```
+
+需要的环境变量:
+
+```bash .env
+OPENAI_API_KEY=
+```
+
+### Anthropic
+
+
+```python
+from langchain_anthropic import ChatAnthropic
+from browser_use import Agent
+
+# 初始化模型
+llm = ChatAnthropic(
+    model_name="claude-3-5-sonnet-20240620",
+    temperature=0.0,
+    timeout=100, # 对于复杂任务需要增加超时时间
+)
+
+# 使用该模型创建代理
+agent = Agent(
+    task="你的任务",
+    llm=llm
+)
+```
+
+添加变量:
+
+```bash .env
+ANTHROPIC_API_KEY=
+```
+
+### Azure OpenAI
+
+```python
+from langchain_openai import AzureChatOpenAI
+from browser_use import Agent
+from pydantic import SecretStr
+import os
+
+# 初始化模型
+llm = AzureChatOpenAI(
+    model="gpt-4o",
+    api_version='2024-10-21',
+    azure_endpoint=os.getenv('AZURE_OPENAI_ENDPOINT', ''),
+    api_key=SecretStr(os.getenv('AZURE_OPENAI_KEY', '')),
+)
+
+# 使用该模型创建代理
+agent = Agent(
+    task="你的任务",
+    llm=llm
+)
+```
+
+需要的环境变量:
+
+```bash .env
+AZURE_OPENAI_ENDPOINT=https://your-endpoint.openai.azure.com/
+AZURE_OPENAI_KEY=
+```
+
+
+### Gemini
+
+```python
+from langchain_google_genai import ChatGoogleGenerativeAI
+from browser_use import Agent
+from pydantic import SecretStr
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+api_key = os.getenv("GEMINI_API_KEY")
+
+# 初始化模型
+llm = ChatGoogleGenerativeAI(model='gemini-2.0-flash-exp', api_key=SecretStr(os.getenv('GEMINI_API_KEY')))
+
+# 使用该模型创建代理
+agent = Agent(
+    task="你的任务",
+    llm=llm
+)
+```
+
+需要的环境变量:
+
+```bash .env
+GEMINI_API_KEY=
+```
+
+
+### DeepSeek-V3
+社区喜欢 DeepSeek-V3 是因为它价格低、无速率限制、开源且性能良好。
+示例可在[这里](https://github.com/browser-use/browser-use/blob/main/examples/models/deepseek.py)找到。
+
+```python
+from langchain_openai import ChatOpenAI
+from browser_use import Agent
+from pydantic import SecretStr
+
+
+# 初始化模型
+llm=ChatOpenAI(base_url='https://api.deepseek.com/v1', model='deepseek-chat', api_key=SecretStr(api_key))
+
+# 使用该模型创建代理
+agent = Agent(
+    task="你的任务",
+    llm=llm,
+    use_vision=False
+)
+```
+
+需要的环境变量:
+
+```bash .env
+DEEPSEEK_API_KEY=
+```
+
+### DeepSeek-R1
+我们支持 DeepSeek-R1。它还没有完全测试,更多功能将被添加,比如输出其推理内容。
+示例可在[这里](https://github.com/browser-use/browser-use/blob/main/examples/models/deepseek-r1.py)找到。
+它不支持视觉功能。该模型是开源的,所以你也可以用 Ollama 来使用它,但我们还没有测试过。
+
+```python
+from langchain_openai import ChatOpenAI
+from browser_use import Agent
+from pydantic import SecretStr
+
+
+# 初始化模型
+llm=ChatOpenAI(base_url='https://api.deepseek.com/v1', model='deepseek-reasoner', api_key=SecretStr(api_key))
+
+# 使用该模型创建代理
+agent = Agent(
+    task="你的任务",
+    llm=llm,
+    use_vision=False
+)
+```
+
+需要的环境变量:
+
+```bash .env
+DEEPSEEK_API_KEY=
+```
+
+### Ollama
+许多用户要求本地模型。这里就是。
+
+1. 从[这里](https://ollama.ai/download)下载 Ollama
+2. 运行 `ollama pull model_name`。从[这里](https://ollama.com/search?c=tools)选择一个支持工具调用的模型
+3. 运行 `ollama start`
+
+```python
+from langchain_ollama import ChatOllama
+from browser_use import Agent
+from pydantic import SecretStr
+
+
+# 初始化模型
+llm=ChatOllama(model="qwen2.5", num_ctx=32000)
+
+# 使用该模型创建代理
+agent = Agent(
+    task="你的任务",
+    llm=llm
+)
+```
+
+需要的环境变量: 无!
+
+## 即将推出
+(我们正在努力)
+- Groq
+- Github
+- 微调模型

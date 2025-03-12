@@ -1,0 +1,53 @@
+---
+title: "连接到你的浏览器"
+description: "通过这个你可以连接到你的真实浏览器,在那里你已经登录了所有账户。"
+icon: "computer"
+---
+
+## 概述
+
+你可以将代理连接到你的真实 Chrome 浏览器实例,让它访问你现有的浏览器配置文件,包括所有已登录的账户和设置。当你希望代理与你已经通过身份验证的服务交互时,这特别有用。
+
+<Note>
+  首先确保关闭所有正在运行的 Chrome 实例。
+</Note>
+
+## 基本配置
+
+要连接到你的真实 Chrome 浏览器,你需要在创建 Browser 实例时指定 Chrome 可执行文件的路径:
+
+```python
+from browser_use import Agent, Browser, BrowserConfig
+from langchain_openai import ChatOpenAI
+import asyncio
+# 配置浏览器以连接到你的 Chrome 实例
+browser = Browser(
+    config=BrowserConfig(
+        # 指定你的 Chrome 可执行文件的路径
+        chrome_instance_path='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',  # macOS 路径
+        # Windows 通常为: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+        # Linux 通常为: '/usr/bin/google-chrome'
+    )
+)
+
+# 使用你配置的浏览器创建代理
+agent = Agent(
+    task="你的任务",
+    llm=ChatOpenAI(model='gpt-4o'),
+    browser=browser,
+)
+
+async def main():
+    await agent.run()
+
+    input('按回车键关闭浏览器...')
+    await browser.close()
+
+if __name__ == '__main__':
+    asyncio.run(main())
+```
+
+
+<Note>
+  当使用你的真实浏览器时,代理将可以访问你所有的已登录会话。请务必始终检查你给代理的任务,并确保它符合你的安全要求!
+</Note>

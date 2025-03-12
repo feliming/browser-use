@@ -1,0 +1,49 @@
+---
+title: "输出格式"
+description: "默认是文本格式。但你可以定义结构化的输出格式以便于后处理。"
+icon: "code"
+---
+
+## 自定义输出格式
+使用[此示例](https://github.com/browser-use/browser-use/blob/main/examples/features/custom_output.py)可以定义代理应该返回给你的输出格式。
+
+```python
+from pydantic import BaseModel
+# 将输出格式定义为 Pydantic 模型
+class Post(BaseModel):
+	post_title: str
+	post_url: str
+	num_comments: int
+	hours_since_post: int
+
+
+class Posts(BaseModel):
+	posts: List[Post]
+
+
+controller = Controller(output_model=Posts)
+
+
+async def main():
+	task = '访问 hackernews show hn 并给我前 5 个帖子'
+	model = ChatOpenAI(model='gpt-4o')
+	agent = Agent(task=task, llm=model, controller=controller)
+
+	history = await agent.run()
+
+	result = history.final_result()
+	if result:
+		parsed: Posts = Posts.model_validate_json(result)
+
+		for post in parsed.posts:
+			print('\n--------------------------------')
+			print(f'标题:            {post.post_title}')
+			print(f'URL:              {post.post_url}')
+			print(f'评论数:         {post.num_comments}')
+			print(f'发布时间(小时): {post.hours_since_post}')
+	else:
+		print('无结果')
+
+
+if __name__ == '__main__':
+	asyncio.run(main())
