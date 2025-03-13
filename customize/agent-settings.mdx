@@ -43,24 +43,24 @@ agent = Agent(
 
 - `controller`: 代理可以调用的函数注册表。默认为基础 Controller。详见 <a href="/customize/custom-functions">自定义函数</a>。
 - `use_vision`: 启用/禁用视觉能力。默认为 `True`。
-  - 启用时,模型会处理网页的视觉信息
+  - 启用时，模型会处理网页的视觉信息
   - 禁用以降低成本或使用不支持视觉的模型
-  - 对于 GPT-4o,图像处理每张图片大约需要 800-1000 个令牌(约 0.002 美元),但这取决于定义的屏幕大小
+  - 对于 GPT-4o，图像处理每张图片大约需要 800-1000 个令牌(约 0.002 美元)，但这取决于定义的屏幕大小
 - `save_conversation_path`: 保存完整对话历史的路径。用于调试。
 - `system_prompt_class`: 自定义系统提示类。查看 <a href="/customize/system-prompt">系统提示</a> 了解自定义选项。
 
 <Note>
-  建议启用视觉能力以更好地理解网页交互,
+  建议启用视觉能力以更好地理解网页交互，
   但可以禁用以降低成本或在使用不支持视觉的模型时。
 </Note>
 
 ## (重用)浏览器配置
 
-你可以配置代理如何与浏览器交互。要查看更多 `Browser` 选项,请参考 <a href="/customize/browser-settings">浏览器设置</a> 文档。
+你可以配置代理如何与浏览器交互。要查看更多 `Browser` 选项，请参考 <a href="/customize/browser-settings">浏览器设置</a> 文档。
 
 ### 重用现有浏览器
 
-`browser`: Browser Use Browser 实例。提供时,代理将重用此浏览器实例,并为每个 `run()` 自动创建新的上下文。
+`browser`: Browser Use Browser 实例。提供时，代理将重用此浏览器实例，并为每个 `run()` 自动创建新的上下文。
 
 ```python
 from browser_use import Agent, Browser
@@ -81,7 +81,7 @@ await browser.close()
 ```
 
 <Note>
-  记住: 在这种情况下,`Browser` 不会自动关闭。
+  记住: 在这种情况下，`Browser` 不会自动关闭。
 </Note>
 
 ### 重用现有浏览器上下文
@@ -115,10 +115,10 @@ async with await browser.new_context() as context:
 await browser.close()
 ```
 
-有关浏览器上下文如何工作的更多信息,请参考 [Playwright 文档](https://playwright.dev/docs/api/class-browsercontext)。
+有关浏览器上下文如何工作的更多信息，请参考 [Playwright 文档](https://playwright.dev/docs/api/class-browsercontext)。
 
 <Note>
-  你可以为多个代理重用相同的上下文。如果你什么都不做,浏览器将在 `run()` 完成时自动创建和关闭。
+  你可以为多个代理重用相同的上下文。如果你什么都不做，浏览器将在 `run()` 完成时自动创建和关闭。
 </Note>
 
 ## 运行代理
@@ -154,12 +154,12 @@ history.model_actions()     # 所有带参数的动作
 - `action_results()`: 获取所有动作的结果
 
 <Note>
-  有关帮助方法的完整列表和详细的历史分析功能,请参考 [AgentHistoryList 源代码](https://github.com/browser-use/browser-use/blob/main/browser_use/agent/views.py#L111)。
+  有关帮助方法的完整列表和详细的历史分析功能，请参考 [AgentHistoryList 源代码](https://github.com/browser-use/browser-use/blob/main/browser_use/agent/views.py#L111)。
 </Note>
 
 ## 无 LLM 运行初始动作
 使用[此示例](https://github.com/browser-use/browser-use/blob/main/examples/features/initial_actions.py)可以在没有 LLM 的情况下运行初始动作。
-将动作指定为字典,其中键是动作名称,值是动作参数。你可以在 [Controller](https://github.com/browser-use/browser-use/blob/main/browser_use/controller/service.py) 源代码中找到我们所有的动作。
+将动作指定为字典，其中键是动作名称，值是动作参数。你可以在 [Controller](https://github.com/browser-use/browser-use/blob/main/browser_use/controller/service.py) 源代码中找到我们所有的动作。
 ```python
 initial_actions = [
     {'open_tab': {'url': 'https://www.google.com'}},
@@ -205,5 +205,5 @@ agent = Agent(
 - 更好地处理复杂的多步骤任务
 
 <Note>
-  规划器模型是可选的。如果未指定,代理将不使用规划器模型。
+  规划器模型是可选的。如果未指定，代理将不使用规划器模型。
 </Note>

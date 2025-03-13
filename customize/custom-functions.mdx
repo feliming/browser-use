@@ -39,7 +39,7 @@ agent = Agent(
 
 ## 浏览器感知函数
 
-对于需要浏览器访问的动作,只需在函数参数中添加 `browser` 参数:
+对于需要浏览器访问的动作，只需在函数参数中添加 `browser` 参数:
 
 ```python
 from browser_use import Browser, Controller, ActionResult
@@ -54,7 +54,7 @@ async def open_website(url: str, browser: Browser):
 
 ## 使用 Pydantic 的结构化参数
 
-对于复杂的动作,你可以使用 Pydantic 模型定义参数模式:
+对于复杂的动作，你可以使用 Pydantic 模型定义参数模式:
 
 ```python
 from pydantic import BaseModel
@@ -109,15 +109,15 @@ await agent2.run()
 ```
 
 <Note>
-  控制器是无状态的,可以用于注册多个动作和多个代理。
+  控制器是无状态的，可以用于注册多个动作和多个代理。
 </Note>
 
 ## 排除函数
-如果你想让代理使用更少的动作,你可以从控制器中排除它们。
+如果你想让代理使用更少的动作，你可以从控制器中排除它们。
 ```python
 controller = Controller(exclude_actions=['open_tab', 'search_google'])
 ```
 
 
-访问 [examples/custom-functions](https://github.com/browser-use/browser-use/tree/main/examples/custom-functions) 查看更多示例,如文件上传或通知。
+访问 [examples/custom-functions](https://github.com/browser-use/browser-use/tree/main/examples/custom-functions) 查看更多示例，如文件上传或通知。
 

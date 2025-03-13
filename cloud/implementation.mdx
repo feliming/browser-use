@@ -8,7 +8,7 @@ icon: "code"
 
 ## 基本实现
 
-有关所有设置,请参见 [运行任务](cloud/api-v10/run-task)。
+有关所有设置，请参见 [运行任务](cloud/api-v10/run-task)。
 
 这里是使用 Python 的 `requests` 库来流式传输任务步骤的简单实现:
 
@@ -36,7 +36,7 @@ def get_task_status(task_id: str):
 
 
 def get_task_details(task_id: str):
-	"""获取完整的任务详情,包括输出"""
+	"""获取完整的任务详情，包括输出"""
 	response = requests.get(f'{BASE_URL}/task/{task_id}', headers=HEADERS)
 	return response.json()
 
@@ -98,7 +98,7 @@ def control_task():
 
 	# 等待完成
 	result = wait_for_completion(task_id)
-	print(f"任务完成,输出: {result['output']}")
+	print(f"任务完成，输出: {result['output']}")
 ```
 
 <Note>

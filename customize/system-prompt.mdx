@@ -12,7 +12,7 @@ icon: "message"
 2. 完全覆盖默认系统提示
 
 <Note>
-  自定义系统提示允许你在基础层面修改代理的行为。请谨慎使用此功能,因为它可能会显著影响代理的性能和可靠性。
+  自定义系统提示允许你在基础层面修改代理的行为。请谨慎使用此功能，因为它可能会显著影响代理的性能和可靠性。
 </Note>
 
 ### 扩展系统提示(推荐)
@@ -26,7 +26,7 @@ from langchain_openai import ChatOpenAI
 # 添加你的自定义指令
 extend_system_message = """
 记住最重要的规则:
-无论任务是什么,总是先打开新标签页并首先访问 wikipedia.com!!!
+无论任务是什么，总是先打开新标签页并首先访问 wikipedia.com!!!
 """
 
 # 使用扩展的系统提示创建代理
@@ -40,11 +40,11 @@ agent = Agent(
 ### 覆盖系统提示
 
 <Warning>
-  不推荐! 如果你必须覆盖[默认系统提示](https://github.com/browser-use/browser-use/blob/main/browser_use/agent/system_prompt.md),
+  不推荐! 如果你必须覆盖[默认系统提示](https://github.com/browser-use/browser-use/blob/main/browser_use/agent/system_prompt.md)，
   请确保自行测试代理。
 </Warning>
 
-无论如何,要覆盖默认系统提示:
+无论如何，要覆盖默认系统提示:
 
 ```python
 # 定义你的完整自定义提示

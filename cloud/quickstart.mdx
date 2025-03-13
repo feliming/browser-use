@@ -17,7 +17,7 @@ Browser Use Cloud API 允许你以编程方式创建和管理浏览器自动化�
 Browser Use Cloud API 的价格为每个代理执行的**每个步骤 0.05 美元**。
 
 <Note>
-  由于 Browser Use 可以同时执行多个步骤,
+  由于 Browser Use 可以同时执行多个步骤，
   填写表单的价格比其他服务要低得多。
 </Note>
 
@@ -34,10 +34,10 @@ curl -X POST https://api.browser-use.com/api/v1/run-task \
   }'
 ```
 
-API 返回一个任务 ID,你可以用它来管理任务并查看实时预览 URL。
+API 返回一个任务 ID，你可以用它来管理任务并查看实时预览 URL。
 
 <Note>
-  任务响应包含一个 `live_url`,你可以将其嵌入 iframe 中,
+  任务响应包含一个 `live_url`，你可以将其嵌入 iframe 中，
   实时观看和控制代理。
 </Note>
 
@@ -47,7 +47,7 @@ API 返回一个任务 ID,你可以用它来管理任务并查看实时预览 UR
 
 <AccordionGroup>
   <Accordion title="暂停/恢复任务">
-    使用 [`/api/v1/pause-task`](/cloud/api-v1/pause-task) 临时暂停任务执行,
+    使用 [`/api/v1/pause-task`](/cloud/api-v1/pause-task) 临时暂停任务执行，
     使用 [`/api/v1/resume-task`](/cloud/api-v1/resume-task) 恢复。这对手动检查或干预很有用。
   </Accordion>
 
@@ -56,7 +56,7 @@ API 返回一个任务 ID,你可以用它来管理任务并查看实时预览 UR
   </Accordion>
 </AccordionGroup>
 
-有关详细的 API 文档,请参阅左侧的选项卡,其中包含完整的 API 覆盖范围。
+有关详细的 API 文档，请参阅左侧的选项卡，其中包含完整的 API 覆盖范围。
 
 ## 构建你自己的客户端 (OpenAPI)
 
@@ -82,7 +82,7 @@ openapi-python-client generate --url http://api.browser-use.com/openapi.json
 
 ### TypeScript/JavaScript
 
-对于 TypeScript 项目,使用 [openapi-typescript](https://www.npmjs.com/package/openapi-typescript) 生成类型定义:
+对于 TypeScript 项目，使用 [openapi-typescript](https://www.npmjs.com/package/openapi-typescript) 生成类型定义:
 
 ```bash
 # 安装生成器

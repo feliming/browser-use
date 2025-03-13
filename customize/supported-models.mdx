@@ -10,11 +10,11 @@ Browser Use 支持多种 LangChain 聊天模型。以下是如何配置和使用
 
 ## 模型推荐
 
-我们尚未测试所有模型的性能。目前,使用 GPT-4o 可以在 [WebVoyager 数据集](https://browser-use.com/posts/sota-technical-report)上达到 89% 的准确率。DeepSeek-V3 的成本比 GPT-4o 低 30 倍。Gemini-2.0-exp 在社区中也越来越受欢迎,因为它目前是免费的。
-我们也支持本地模型,如 Qwen 2.5,但要注意小型模型经常会返回错误的输出结构-这会导致解析错误。我们相信本地模型今年会有显著改进。
+我们尚未测试所有模型的性能。目前，使用 GPT-4o 可以在 [WebVoyager 数据集](https://browser-use.com/posts/sota-technical-report)上达到 89% 的准确率。DeepSeek-V3 的成本比 GPT-4o 低 30 倍。Gemini-2.0-exp 在社区中也越来越受欢迎，因为它目前是免费的。
+我们也支持本地模型，如 Qwen 2.5，但要注意小型模型经常会返回错误的输出结构-这会导致解析错误。我们相信本地模型今年会有显著改进。
 
 <Note>
-  所有模型都需要其各自的 API 密钥。在运行代理之前,请确保在环境变量中设置它们。
+  所有模型都需要其各自的 API 密钥。在运行代理之前，请确保在环境变量中设置它们。
 </Note>
 
 ## 支持的模型
@@ -163,9 +163,9 @@ DEEPSEEK_API_KEY=
 ```
 
 ### DeepSeek-R1
-我们支持 DeepSeek-R1。它还没有完全测试,更多功能将被添加,比如输出其推理内容。
+我们支持 DeepSeek-R1。它还没有完全测试，更多功能将被添加，比如输出其推理内容。
 示例可在[这里](https://github.com/browser-use/browser-use/blob/main/examples/models/deepseek-r1.py)找到。
-它不支持视觉功能。该模型是开源的,所以你也可以用 Ollama 来使用它,但我们还没有测试过。
+它不支持视觉功能。该模型是开源的，所以你也可以用 Ollama 来使用它，但我们还没有测试过。
 
 ```python
 from langchain_openai import ChatOpenAI
